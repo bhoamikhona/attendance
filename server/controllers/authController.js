@@ -1,6 +1,5 @@
 import User from "../models/userModel.js";
 import { hashPassword, comparePassword, generateToken } from "../utils/auth.js";
-import jwt from "jsonwebtoken";
 import asyncHandler from "../middlewares/asyncHandler.js";
 
 /**
@@ -41,6 +40,7 @@ export const register = asyncHandler(async function (req, res) {
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin,
+        isSignedIn: user.isSignedIn,
       },
     });
   } else {
@@ -63,6 +63,15 @@ export const login = asyncHandler(async function (req, res) {
 
   const user = await User.findOne({ email });
 
+  if (!user) {
+    res.status(401).json({
+      success: false,
+      message: "No user found, please register",
+      data: null,
+    });
+    throw new Error("No user found, please register");
+  }
+
   if (user && (await comparePassword(password, user.password))) {
     generateToken(res, user._id);
 
@@ -74,6 +83,7 @@ export const login = asyncHandler(async function (req, res) {
         name: user.name,
         email: user.email,
         isAdmin: user.isAdmin,
+        isSignedIn: user.isSignedIn,
       },
     });
   } else {

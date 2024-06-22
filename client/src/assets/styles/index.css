@@ -1,4 +1,4 @@
-main {
+.main {
   min-height: 80vh;
 }
 
@@ -8,4 +8,8 @@ main {
   border-radius: 5rem;
   margin: 3rem auto;
   height: 70vh;
+}
+
+.username {
+  text-transform: capitalize;
 }

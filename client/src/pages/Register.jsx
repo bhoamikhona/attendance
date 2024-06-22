@@ -1,15 +1,42 @@
 import { useState } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import FormContainer from "../components/FormContainer";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
-  const submitHandler = function (e) {
+  const submitHandler = async function (e) {
     e.preventDefault();
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    if (!email || !password || !confirmPassword || !name) {
+      toast.error("All fields are required");
+    }
+
+    try {
+      const res = await axios.post("/auth/register", { name, email, password });
+      console.log(res);
+
+      if (res) {
+        toast.success(res.data.message);
+        localStorage.setItem("userInfo", JSON.stringify(res.data.data));
+        navigate("/");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    }
   };
 
   return (
@@ -61,7 +88,9 @@ const Register = () => {
       </Form>
 
       <Row className="py-3">
-        <Col>Already have an account? Login</Col>
+        <Col>
+          Already have an account? <Link to="/login">Login</Link>
+        </Col>
       </Row>
     </FormContainer>
   );

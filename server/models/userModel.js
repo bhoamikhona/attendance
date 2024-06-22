@@ -19,7 +19,12 @@ const userSchema = new Schema({
     required: true,
     default: false,
   },
-  attendance: {
+  isSignedIn: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  records: {
     type: [Schema.Types.ObjectId],
     ref: "Record",
     default: [],
