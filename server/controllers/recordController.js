@@ -7,11 +7,6 @@ export const addRecord = asyncHandler(async function (req, res) {
 
   const user = await User.findOne({ email });
 
-  if (user) {
-    user.isSignedIn = true;
-    await user.save();
-  }
-
   if (!user) {
     res.status(404).json({
       success: false,
@@ -39,6 +34,7 @@ export const addRecord = asyncHandler(async function (req, res) {
     user: user._id,
   });
 
+  user.isSignedIn = true;
   user.records.push(record._id);
   await user.save();
 
@@ -59,5 +55,70 @@ export const addRecord = asyncHandler(async function (req, res) {
 });
 
 export const updateRecord = asyncHandler(async function (req, res) {
-  res.send("update record");
+  const { email, time, date } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    res.status(404).json({
+      success: false,
+      message: "User not found",
+      data: null,
+    });
+    throw new Error("User not found");
+  }
+
+  const record = await Record.findOne({ user: user._id, date });
+
+  if (!record) {
+    res.status(404).json({
+      success: false,
+      message: "No record found for today",
+      data: null,
+    });
+    throw new Error("No record found for today");
+  }
+
+  record.signout = time;
+  await record.save();
+
+  user.isSignedIn = false;
+  await user.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Sign Out Successful",
+    data: record,
+  });
+});
+
+export const getUserRecords = asyncHandler(async function (req, res) {
+  const { email } = req.query;
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    res.status(404).json({
+      success: false,
+      message: "User not found",
+      data: null,
+    });
+    throw new Error("User not found");
+  }
+
+  const records = await Record.find({ user: user._id });
+
+  if (!records.length) {
+    res.status(404).json({
+      success: false,
+      message: "No records found",
+      data: null,
+    });
+    throw new Error("No records found");
+  }
+
+  res.status(200).json({
+    success: true,
+    data: records,
+  });
 });

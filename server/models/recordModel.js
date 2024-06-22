@@ -14,6 +14,11 @@ const recordSchema = new Schema({
   date: {
     type: String,
   },
+  user: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 });
 
 const Record = model("Record", recordSchema);
