@@ -15,6 +15,7 @@ import Register from "./pages/Register.jsx";
 import Home from "./pages/Home.jsx";
 import axios from "axios";
 import { Toaster } from "react-hot-toast";
+import AdminRecords from "./pages/AdminRecords.jsx";
 
 axios.defaults.baseURL = "http://localhost:8000/api/v1";
 axios.defaults.withCredentials = true;
@@ -25,6 +26,7 @@ const router = createBrowserRouter(
       <Route index={true} path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/admin-records" element={<AdminRecords />} />
     </Route>
   )
 );

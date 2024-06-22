@@ -2,11 +2,6 @@ import User from "../models/userModel.js";
 import { hashPassword, comparePassword, generateToken } from "../utils/auth.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 
-/**
- * @desc    Register a new user
- * @route   POST /api/v1/auth/register
- * @access  Public
- */
 export const register = asyncHandler(async function (req, res) {
   const { name, email, password } = req.body;
 
@@ -53,11 +48,6 @@ export const register = asyncHandler(async function (req, res) {
   }
 });
 
-/**
- * @desc    Auth user & get token
- * @route   POST /api/v1/auth/login
- * @access  Public
- */
 export const login = asyncHandler(async function (req, res) {
   const { email, password } = req.body;
 
@@ -96,9 +86,6 @@ export const login = asyncHandler(async function (req, res) {
   }
 });
 
-// @desc    Logout user / clear cookie
-// @route   POST /api/v1/auth/logout
-// @access  Public
 export const logout = function (req, res) {
   res.clearCookie("jwt");
   res.status(200).json({
@@ -107,3 +94,29 @@ export const logout = function (req, res) {
     data: null,
   });
 };
+
+export const getAllUsers = asyncHandler(async function (req, res) {
+  try {
+    const users = await User.find({});
+
+    if (!users || users.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No users found",
+        data: null,
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Users retrieved successfully",
+      data: users,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: error.message,
+    });
+  }
+});

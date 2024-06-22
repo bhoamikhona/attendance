@@ -5,22 +5,23 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 function Header() {
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("userInfo"));
-    setUserData(() => data);
+    if (data) {
+      setUserData(data);
+    }
   }, []);
 
   const handleLogout = async function () {
-    localStorage.setItem("userInfo", null);
     try {
       const res = await axios.post("/auth/logout");
-      if (res) {
+      if (res.data.success) {
         toast.success(res.data.message);
-        localStorage.setItem("userInfo", null);
-        setUserData(() => {});
+        localStorage.removeItem("userInfo");
+        setUserData(null);
         navigate("/login");
       }
     } catch (error) {
@@ -39,7 +40,14 @@ function Header() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
             <Nav.Item>
-              {!userData?.name ? (
+              {userData?.isAdmin && (
+                <Nav.Link as={Link} to="/admin-records">
+                  Users
+                </Nav.Link>
+              )}
+            </Nav.Item>
+            <Nav.Item>
+              {!userData ? (
                 <Nav.Link as={Link} to="/login">
                   Login
                 </Nav.Link>

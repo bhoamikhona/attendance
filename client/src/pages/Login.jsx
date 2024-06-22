@@ -17,9 +17,9 @@ const Login = () => {
       const res = await axios.post("/auth/login", { email, password });
       console.log(res);
 
-      if (res) {
-        toast.success(res.data.message);
+      if (res.data.success) {
         localStorage.setItem("userInfo", JSON.stringify(res.data.data));
+        toast.success(res.data.message);
         navigate("/");
       }
     } catch (error) {
