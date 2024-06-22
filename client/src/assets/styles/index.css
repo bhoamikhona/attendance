@@ -1,0 +1,11 @@
+main {
+  min-height: 80vh;
+}
+
+.form-container {
+  /* padding: 4rem 0;
+  box-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.075); */
+  border-radius: 5rem;
+  margin: 3rem auto;
+  height: 70vh;
+}
