@@ -29,7 +29,7 @@ export const addRecord = asyncHandler(async function (req, res) {
 
   const record = await Record.create({
     signin: time,
-    signout: "N/A",
+    signout: "Pending",
     date: date,
     user: user._id,
   });
