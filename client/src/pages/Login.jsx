@@ -1,31 +1,39 @@
-import { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
-import FormContainer from "../components/FormContainer";
-import { Link, useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
-import axios from "axios";
+import FormContainer from "../components/FormContainer.jsx";
+import { Link } from "react-router-dom";
+import { AppContext } from "../context/AppContext.js";
 
-const Login = () => {
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+
+  const [emailValid, setEmailValid] = useState(true);
+  const [passwordValid, setPasswordValid] = useState(true);
+
+  const { loginUser } = useContext(AppContext);
 
   const submitHandler = async function (e) {
     e.preventDefault();
 
-    try {
-      const res = await axios.post("/auth/login", { email, password });
-      console.log(res);
+    let isValid = true;
 
-      if (res.data.success) {
-        localStorage.setItem("userInfo", JSON.stringify(res.data.data));
-        toast.success(res.data.message);
-        navigate("/");
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error(error?.response?.data?.message || "Something went wrong");
+    if (!email) {
+      setEmailValid(false);
+      isValid = false;
+    } else {
+      setEmailValid(true);
     }
+
+    if (!password) {
+      setPasswordValid(false);
+      isValid = false;
+    } else {
+      setPasswordValid(true);
+    }
+
+    loginUser(email, password);
+    // console.log(AppContext);
   };
 
   return (
@@ -39,7 +47,11 @@ const Login = () => {
             placeholder="Enter email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            isInvalid={!emailValid}
           ></Form.Control>
+          <Form.Control.Feedback type="invalid">
+            Email is required
+          </Form.Control.Feedback>
         </Form.Group>
 
         <Form.Group className="my-2" controlId="password">
@@ -49,7 +61,11 @@ const Login = () => {
             placeholder="Enter password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            isInvalid={!passwordValid}
           ></Form.Control>
+          <Form.Control.Feedback type="invalid">
+            Password is required
+          </Form.Control.Feedback>
         </Form.Group>
 
         <Button type="submit" variant="primary">
@@ -64,6 +80,6 @@ const Login = () => {
       </Row>
     </FormContainer>
   );
-};
+}
 
 export default Login;

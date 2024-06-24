@@ -1,58 +1,44 @@
-import { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { Navbar, Nav, Container, Button } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
+import { AppContext } from "../context/AppContext.js";
 
 function Header() {
-  const [userData, setUserData] = useState(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("userInfo"));
-    if (data) {
-      setUserData(data);
-    }
-  }, []);
-
-  const handleLogout = async function () {
-    try {
-      const res = await axios.post("/auth/logout");
-      if (res.data.success) {
-        toast.success(res.data.message);
-        localStorage.removeItem("userInfo");
-        setUserData(null);
-        navigate("/login");
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error(error?.response?.data?.message || "Something went wrong");
-    }
-  };
+  const { user, logoutUser } = useContext(AppContext);
 
   return (
     <Navbar bg="dark" variant="dark" expand="md" collapseOnSelect>
       <Container>
-        <Navbar.Brand as={Link} to="/">
+        <Navbar.Brand as={Link} to={user?.name ? "/" : "/login"}>
           Attendance
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
             <Nav.Item>
-              {userData?.isAdmin && (
+              {user?.isAdmin && (
+                <Nav.Link as={Link} to="/">
+                  Home
+                </Nav.Link>
+              )}
+            </Nav.Item>
+            <Nav.Item>
+              {user?.isAdmin && (
                 <Nav.Link as={Link} to="/admin-records">
                   Users
                 </Nav.Link>
               )}
             </Nav.Item>
+
             <Nav.Item>
-              {!userData ? (
+              {!user?.name && (
                 <Nav.Link as={Link} to="/login">
                   Login
                 </Nav.Link>
-              ) : (
-                <Nav.Link as={Button} variant="danger" onClick={handleLogout}>
+              )}
+
+              {user?.name && (
+                <Nav.Link as={Button} variant="danger" onClick={logoutUser}>
                   Logout
                 </Nav.Link>
               )}

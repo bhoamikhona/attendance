@@ -53,6 +53,15 @@ export const login = asyncHandler(async function (req, res) {
 
   const user = await User.findOne({ email });
 
+  if (user === "" || password === "") {
+    res.status(401).json({
+      success: false,
+      message: "All fields are required",
+      data: null,
+    });
+    throw new Error("All fields are required");
+  }
+
   if (!user) {
     res.status(401).json({
       success: false,
@@ -95,28 +104,39 @@ export const logout = function (req, res) {
   });
 };
 
+export const getUser = asyncHandler(async function (req, res) {
+  const { id } = req.params;
+
+  const user = User.findById(id);
+
+  if (user) {
+    res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      isSignedIn: user.isSignedIn,
+    });
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+});
+
 export const getAllUsers = asyncHandler(async function (req, res) {
-  try {
-    const users = await User.find({});
+  const users = await User.find({});
 
-    if (!users || users.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No users found",
-        data: null,
-      });
-    }
-
+  if (!users || users.length === 0) {
+    return res.status(404).json({
+      success: false,
+      message: "No users found",
+      data: null,
+    });
+  } else {
     res.status(200).json({
       success: true,
       message: "Users retrieved successfully",
       data: users,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Server Error",
-      error: error.message,
     });
   }
 });

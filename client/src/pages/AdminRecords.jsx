@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
-import { Table, Container, Accordion } from "react-bootstrap";
+import { Container, Accordion } from "react-bootstrap";
 import toast from "react-hot-toast";
 import axios from "axios";
+import RecordsTable from "../components/RecordsTable.jsx";
+import Loader from "../components/Loader.jsx";
 
 function AdminRecords() {
   const [users, setUsers] = useState([]);
@@ -10,10 +12,13 @@ function AdminRecords() {
 
   const fetchUsers = async function () {
     try {
+      setLoading(true);
       const res = await axios.get("/auth/users");
       setUsers(res.data.data);
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -28,7 +33,6 @@ function AdminRecords() {
         }));
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Something went wrong");
       console.log(error);
     } finally {
       setLoading(false);
@@ -57,28 +61,13 @@ function AdminRecords() {
               </Accordion.Header>
               <Accordion.Body>
                 {loading ? (
-                  <p>Loading records...</p>
+                  <Loader />
                 ) : records[user.email] ? (
-                  <Table striped bordered hover>
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Sign In</th>
-                        <th>Sign Out</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {records[user.email].map((record) => (
-                        <tr key={record._id}>
-                          <td>{record.date}</td>
-                          <td>{record.signin}</td>
-                          <td>{record.signout}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </Table>
+                  <>
+                    <RecordsTable records={records[user.email]} />
+                  </>
                 ) : (
-                  <p>No records found.</p>
+                  <p className="text-danger">No records found.</p>
                 )}
               </Accordion.Body>
             </Accordion.Item>
