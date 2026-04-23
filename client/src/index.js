@@ -9,7 +9,9 @@ import { BrowserRouter } from "react-router-dom";
 import { AppProvider } from "./context/AppContext.js";
 
 // axios.defaults.baseURL = "http://localhost:8000/api/v1";
-axios.defaults.baseURL = "https://attendance-p21a.onrender.com/api/v1";
+// axios.defaults.baseURL = "https://attendance-p21a.onrender.com/api/v1"; // render
+axios.defaults.baseURL =
+  "https://attendance-production-c22e.up.railway.app/api/v1";
 axios.defaults.withCredentials = true;
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
