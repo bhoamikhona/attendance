@@ -4,6 +4,9 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { getDate, getTime } from "../utils/helpers.js";
 
+axios.defaults.baseURL =
+  process.env.REACT_APP_API_URL || "http://localhost:8000/api/v1";
+
 export const AppContext = createContext();
 
 export const AppProvider = function ({ children }) {
@@ -111,7 +114,7 @@ export const AppProvider = function ({ children }) {
         setUser({ ...user, isSignedIn: true });
         localStorage.setItem(
           "userInfo",
-          JSON.stringify({ ...user, isSignedIn: true })
+          JSON.stringify({ ...user, isSignedIn: true }),
         );
         toast.success("Sign In Successful");
         fetchRecords(user.email);
@@ -136,7 +139,7 @@ export const AppProvider = function ({ children }) {
         setUser({ ...user, isSignedIn: false });
         localStorage.setItem(
           "userInfo",
-          JSON.stringify({ ...user, isSignedIn: false })
+          JSON.stringify({ ...user, isSignedIn: false }),
         );
         toast.success(res.data.message);
         fetchRecords(user.email);
