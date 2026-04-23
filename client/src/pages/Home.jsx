@@ -1,11 +1,8 @@
-import React, { useContext, useState } from "react";
-import toast from "react-hot-toast";
-import axios from "axios";
+import React, { useContext } from "react";
 import { AppContext } from "../context/AppContext.js";
 import { Container, Button } from "react-bootstrap";
 import RecordsTable from "../components/RecordsTable.jsx";
 import { FaClock } from "react-icons/fa";
-import { getTime, getDate } from "../utils/helpers.js";
 
 function Home() {
   const { user, handleSignIn, handleSignOut, records, loading } =
