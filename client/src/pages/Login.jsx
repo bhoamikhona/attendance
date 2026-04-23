@@ -32,8 +32,17 @@ function Login() {
       setPasswordValid(true);
     }
 
+    if (!isValid) return;
+
     loginUser(email, password);
-    // console.log(AppContext);
+  };
+
+  const loginAsUser = () => {
+    loginUser("bhoami@email.com", "bhoami");
+  };
+
+  const loginAsAdmin = () => {
+    loginUser("admin@email.com", "admin");
   };
 
   return (
@@ -72,6 +81,20 @@ function Login() {
           Login
         </Button>
       </Form>
+
+      <hr className="my-3" />
+
+      <p className="text-muted mb-2" style={{ fontSize: "0.85rem" }}>
+        Demo accounts:
+      </p>
+      <div className="d-flex gap-2">
+        <Button variant="outline-dark" size="sm" onClick={loginAsUser}>
+          Login as User
+        </Button>
+        <Button variant="outline-dark" size="sm" onClick={loginAsAdmin}>
+          Login as Admin
+        </Button>
+      </div>
 
       <Row className="py-3">
         <Col>
