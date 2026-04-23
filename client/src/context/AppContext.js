@@ -5,7 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { getDate, getTime } from "../utils/helpers.js";
 
 axios.defaults.baseURL =
-  process.env.REACT_APP_API_URL || "http://localhost:8000/api/v1";
+  process.env.NODE_ENV === "production"
+    ? "https://attendance-p21a.onrender.com/api/v1"
+    : "http://localhost:8000/api/v1";
 
 export const AppContext = createContext();
 
